@@ -22,6 +22,7 @@ var GUI_control = function () {
         'firmware_flasher',
         'mission_control',
         'sitl',
+		'my_custom',
         'help'
     ];
     this.defaultAllowedTabsWhenConnected = [
@@ -43,6 +44,7 @@ var GUI_control = function () {
         'calibration',
         'setup',
         'osd',
+		'my_custom',
         'profiles',
         'advanced_tuning',
         'mission_control',
