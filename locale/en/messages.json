@@ -2899,6 +2899,9 @@
     "tabOSD": {
         "message": "OSD"
     },
+	"tabMyCustom": {
+		"message": "My Custom Tab"
+	},
     "configurationSensors": {
         "message": "Sensors & Buses"
     },
