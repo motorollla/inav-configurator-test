@@ -23,6 +23,8 @@ import store from './store';
 
 
 window.$ = $;
+window.TABS = window.TABS || {};
+window.GUI = window.GUI || {};  // на случай, если GUI ещё не определён
 
 // Set how the units render on the configurator only
 $(function() {
@@ -238,6 +240,9 @@ $(function() {
                         case 'sensors':
                             import('./../tabs/sensors').then(() => TABS.sensors.initialize(content_ready));
                             break;
+						case 'my_custom':
+							import('./../tabs/my_custom').then(() => TABS.my_custom.initialize(content_ready));
+							break;
                         case 'logging':
                             import('./../tabs/logging').then(() => TABS.logging.initialize(content_ready));
                             break;
