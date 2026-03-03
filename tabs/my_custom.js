@@ -1,36 +1,60 @@
 'use strict';
 
-import { GUI, TABS } from './../js/gui.js';  // ← ESM-импорт (расширение .js обязательно в Vite!)
-import tabs from './../js/tabs.js';          // если используешь tabs.init
+import { GUI, TABS } from './../js/gui.js';
+import tabs from './../js/tabs.js';
 
-console.log(">>> my_custom.js успешно импортирован (ESM) <<<");
+// Подгружаем оригинальные скрипты (чтобы их initialize сработал внутри субтабов)
+import './osd.js';
+import './sensors.js';
 
 TABS.my_custom = {
     initialize: function (callback) {
-        console.log(">>> my_custom initialize вызвана <<<");
-
-        // Raw import HTML как строка (как в pid_tuning)
         import('./my_custom.html?raw').then(({ default: html }) => {
-            console.log(">>> my_custom.html импортирован как raw-строка <<<");
-
             GUI.load(html, function () {
-                console.log(">>> GUI.load(html) выполнен <<<");
-
-                // Автоматическая обработка субтабов — как в других табах, где есть .subtabs
+                // ← Инициализируем горизонтальные субтабы (как в pid_tuning)
                 tabs.init($('.tab_my_custom'));
 
-                // Если tabs.init не переключает — добавь fallback-клик (но сначала проверь)
-                // $('.tab_my_custom .subtab_header_label').on('click', ... ) — можно убрать, если tabs.init работает
+                // Автоматически инициализируем содержимое OSD (первая вкладка)
+                setTimeout(() => {
+                    if (TABS.osd && TABS.osd.initialize) {
+                        TABS.osd.initialize(() => {
+                            console.log("OSD полностью инициализирован внутри субтаба");
+                        });
+                    }
+                }, 100);
+
+                // При переключении субтаба — инициализируем нужную вкладку
+                $('.subtab__header_label').on('click', function () {
+                    const target = $(this).attr('for');
+
+                    if (target === 'subtab-osd') {
+                        if (TABS.osd && TABS.osd.initialize && !TABS.osd._initialized) {
+                            TABS.osd.initialize(() => {
+                                TABS.osd._initialized = true;
+                                console.log("OSD инициализирован при переключении");
+                            });
+                        }
+                    } else if (target === 'subtab-sensors') {
+                        if (TABS.sensors && TABS.sensors.initialize && !TABS.sensors._initialized) {
+                            TABS.sensors.initialize(() => {
+                                TABS.sensors._initialized = true;
+                                console.log("SENSORS инициализирован при переключении");
+                            });
+                        }
+                    }
+
+                    GUI.handleResize?.();
+                });
 
                 GUI.content_ready(callback);
             });
-        }).catch(err => {
-            console.error("Ошибка импорта raw HTML:", err);
         });
     },
 
     cleanup: function (callback) {
-        console.log(">>> my_custom cleanup <<<");
+        // Очистка при выходе из вкладки
+        if (TABS.osd && TABS.osd.cleanup) TABS.osd.cleanup();
+        if (TABS.sensors && TABS.sensors.cleanup) TABS.sensors.cleanup();
         if (callback) callback();
     }
 };
