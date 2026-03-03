@@ -1,10 +1,21 @@
 <!--suppress ALL -->
 <div id="content-watermark"></div>
 <div class="tab_my_custom toolbar_fixed_bottom">
+	<style>
+    #subtab-sensors {
+        min-height: 400px;          /* чтобы не было нулевой высоты */
+        visibility: visible !important;
+        display: block !important;
+    }
+    #subtab-sensors .tab_sensors {
+        padding: 10px;
+        box-sizing: border-box;
+    }
+</style>
     <div id="my_custom-wrapper" class="content_wrapper">
         <div class="tab_title subtab__header">
-            <span class="subtab__header_label subtab__header_label--current" for="subtab-osd" data-i18n="tabOSD">OSD</span>
-            <span class="subtab__header_label" for="subtab-sensors" data-i18n="tabSensors">SENSORS</span>
+            <span class="subtab__header_label subtab__header_label--current" for="subtab-osd">OSD</span>
+            <span class="subtab__header_label" for="subtab-sensors">SENSORS</span>
         </div>
 
         <!-- Подвкладка OSD -->
